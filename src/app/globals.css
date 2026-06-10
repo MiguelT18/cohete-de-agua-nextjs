@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 224 71% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 187 85% 38%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 224 71% 4%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 52%;
+    --accent: 187 85% 95%;
+    --accent-foreground: 187 85% 28%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 187 85% 38%;
+    --radius: 0.75rem;
+    --chart-1: 187 85% 38%;
+    --chart-2: 262 83% 58%;
+    --chart-3: 35 92% 55%;
+    --chart-4: 160 84% 39%;
+    --chart-5: 340 82% 52%;
+  }
+
+  .dark {
+    --background: 240 10% 6%;
+    --foreground: 0 0% 95%;
+    --card: 240 8% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 8% 10%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 187 85% 48%;
+    --primary-foreground: 240 10% 6%;
+    --secondary: 240 6% 16%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 240 6% 16%;
+    --muted-foreground: 240 5% 55%;
+    --accent: 187 60% 12%;
+    --accent-foreground: 187 85% 60%;
+    --destructive: 0 73% 52%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 240 6% 18%;
+    --input: 240 6% 18%;
+    --ring: 187 85% 48%;
+    --chart-1: 187 85% 48%;
+    --chart-2: 262 80% 60%;
+    --chart-3: 35 90% 55%;
+    --chart-4: 160 80% 45%;
+    --chart-5: 340 78% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    font-family: "Inter", system-ui, sans-serif;
+    scroll-behavior: smooth;
+    font-size: 19px;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1, "cv11" 1;
+  }
+}
+
+@layer utilities {
+  .bg-grid {
+    background-image:
+      linear-gradient(hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+}
