@@ -9,30 +9,6 @@ import { SensorCard } from "@/components/sensor-card"
 import { WifiConfig } from "@/components/wifi-config"
 import { useTelemetry } from "@/hooks/use-telemetry"
 
-function SecondaryMetric({
-  label,
-  value,
-  unit,
-  decimals = 1,
-}: {
-  label: string
-  value: number
-  unit: string
-  decimals?: number
-}) {
-  return (
-    <div className="flex items-baseline gap-1.5 rounded-lg bg-muted/30 px-3 py-2">
-      <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/60">
-        {label}
-      </span>
-      <span className="text-sm font-semibold tabular-nums text-foreground/80">
-        {value.toFixed(decimals)}
-      </span>
-      <span className="text-[11px] text-muted-foreground/50">{unit}</span>
-    </div>
-  )
-}
-
 function FlightMetric({
   label,
   value,
@@ -115,7 +91,7 @@ export function TelemetryDashboard() {
         </div>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-6">
         <EspStatus />
       </div>
 
@@ -192,23 +168,13 @@ export function TelemetryDashboard() {
             <div className="mb-3 flex items-center gap-2">
               <div className="h-0.5 w-3 rounded-full bg-primary" />
               <span className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                Ambiente
+                Sensores
               </span>
-            </div>
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              <SecondaryMetric label="Temp. interior" value={latest.b1t} unit="°C" />
-              <SecondaryMetric label="Presión" value={latest.b1p} unit="hPa" decimals={2} />
-              <SecondaryMetric label="Temp. ext. #1" value={latest.a1t} unit="°C" />
-              <SecondaryMetric label="Humedad #1" value={latest.a1h} unit="%" />
-              <SecondaryMetric label="Temp. ext. #2" value={latest.b2t} unit="°C" />
-              <SecondaryMetric label="Presión #2" value={latest.b2p} unit="hPa" decimals={2} />
-              <SecondaryMetric label="Temp. ext. #3" value={latest.a2t} unit="°C" />
-              <SecondaryMetric label="Humedad #2" value={latest.a2h} unit="%" />
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
               <SensorCard
                 title="BMP280 #1"
-                subtitle="Bus 1 · Interior cápsula"
+                subtitle="Interior cápsula"
                 readings={[
                   { label: "Temperatura", value: latest.b1t, unit: "°C" },
                   { label: "Presión", value: latest.b1p, unit: "hPa", decimals: 2 },
@@ -216,7 +182,7 @@ export function TelemetryDashboard() {
               />
               <SensorCard
                 title="AHT20 #1"
-                subtitle="Bus 1 · Humedad y Temp."
+                subtitle="Bus 1"
                 readings={[
                   { label: "Temperatura", value: latest.a1t, unit: "°C" },
                   { label: "Humedad", value: latest.a1h, unit: "%", decimals: 1 },
@@ -224,7 +190,7 @@ export function TelemetryDashboard() {
               />
               <SensorCard
                 title="BMP280 #2"
-                subtitle="Bus 2 · Presión y Temp."
+                subtitle="Bus 2"
                 readings={[
                   { label: "Temperatura", value: latest.b2t, unit: "°C" },
                   { label: "Presión", value: latest.b2p, unit: "hPa", decimals: 2 },
@@ -232,7 +198,7 @@ export function TelemetryDashboard() {
               />
               <SensorCard
                 title="AHT20 #2"
-                subtitle="Bus 2 · Humedad y Temp."
+                subtitle="Bus 2"
                 readings={[
                   { label: "Temperatura", value: latest.a2t, unit: "°C" },
                   { label: "Humedad", value: latest.a2h, unit: "%", decimals: 1 },
