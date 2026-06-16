@@ -45,7 +45,10 @@ export default function RootLayout({
                       </svg>
                     </div>
                     <span className="text-sm font-semibold tracking-tight">
-                      Telemetría
+                      Cohete de Agua
+                    </span>
+                    <span className="hidden text-xs text-muted-foreground/50 sm:inline">
+                      · Panel de telemetría
                     </span>
                   </div>
                   <ThemeToggle />

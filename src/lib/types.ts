@@ -31,10 +31,12 @@ export interface EspStatus {
   wifi: boolean;
   rssi: number;
   sd: boolean;
-  bt: boolean;
   bmp1: boolean;
   aht1: boolean;
   mpu: boolean;
   bmp2: boolean;
   aht2: boolean;
+  lanzado?: boolean;
+  aterrizado?: boolean;
+  tiempoVuelo?: number;
 }

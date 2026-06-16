@@ -1,17 +1,15 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { TelemetryData, TelemetrySnapshot } from "@/lib/types";
+import { TelemetryData } from "@/lib/types";
 
-const SNAPSHOT_FIELDS = ["latest", "history", "sampleCount", "lastUpdate", "connected"] as const;
-
-function isSnapshot(obj: unknown): obj is TelemetrySnapshot & { type?: string } {
-  return (
-    typeof obj === "object" &&
-    obj !== null &&
-    SNAPSHOT_FIELDS.every((f) => f in (obj as Record<string, unknown>))
-  );
+export interface TelemetrySnapshot {
+  latest: TelemetryData | null;
+  history: TelemetryData[];
+  sampleCount: number;
+  lastUpdate: number | null;
+  connected: boolean;
 }
 
 interface UseTelemetryReturn {
@@ -28,49 +26,38 @@ export function useTelemetry(): UseTelemetryReturn {
   const [sampleCount, setSampleCount] = useState(0);
   const [lastUpdate, setLastUpdate] = useState<number | null>(null);
   const [connected, setConnected] = useState(false);
-  const esRef = useRef<EventSource | null>(null);
-  const retryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const connect = useCallback(() => {
-    const es = new EventSource("/api/stream");
-
-    es.onopen = () => {
-      setConnected(true);
-    };
-
-    es.onmessage = (event) => {
-      try {
-        const parsed = JSON.parse(event.data);
-        if (parsed.type === "snapshot" && isSnapshot(parsed)) {
-          setLatest(parsed.latest);
-          setHistory(parsed.history);
-          setSampleCount(parsed.sampleCount);
-          setLastUpdate(parsed.lastUpdate);
-          setConnected(parsed.connected);
-        }
-      } catch {
-        /* ignore */
-      }
-    };
-
-    es.onerror = () => {
-      es.close();
-      setConnected(false);
-      esRef.current = null;
-      retryRef.current = setTimeout(connect, 1500);
-    };
-
-    esRef.current = es;
-  }, []);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
-    const timer = setTimeout(connect, 500);
+    mountedRef.current = true;
+
+    async function poll() {
+      try {
+        const res = await fetch("/api/telemetry");
+        if (!mountedRef.current) return;
+        if (res.ok) {
+          const snapshot: TelemetrySnapshot = await res.json();
+          setLatest(snapshot.latest ?? null);
+          setHistory(snapshot.history ?? []);
+          setSampleCount(snapshot.sampleCount ?? 0);
+          setLastUpdate(snapshot.lastUpdate ?? null);
+          setConnected(snapshot.connected ?? false);
+        } else {
+          if (mountedRef.current) setConnected(false);
+        }
+      } catch {
+        if (mountedRef.current) setConnected(false);
+      }
+    }
+
+    poll();
+    const interval = setInterval(poll, 1000);
+
     return () => {
-      clearTimeout(timer);
-      esRef.current?.close();
-      if (retryRef.current) clearTimeout(retryRef.current);
+      mountedRef.current = false;
+      clearInterval(interval);
     };
-  }, [connect]);
+  }, []);
 
   return { latest, history, sampleCount, lastUpdate, connected };
 }

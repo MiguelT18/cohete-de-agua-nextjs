@@ -27,13 +27,7 @@ export function EspStatus() {
               {!alive ? "—" : status.sd ? "OK" : "NO"}
             </span>
           </span>
-          <span className="flex items-center gap-1.5">
-            <span className={`inline-block h-1.5 w-1.5 rounded-full ${!alive ? "bg-gray-400" : status.bt ? "bg-emerald-500" : "bg-red-500"}`} />
-            <span className="text-muted-foreground">Bluetooth</span>
-            <span className={`font-medium ${!alive ? "text-gray-400" : status.bt ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
-              {!alive ? "—" : status.bt ? "OK" : "NO"}
-            </span>
-          </span>
+
           <span className="flex items-center gap-1.5">
             <span className={`inline-block h-1.5 w-1.5 rounded-full ${!alive ? "bg-gray-400" : status.bmp1 && status.aht1 && status.mpu && status.bmp2 && status.aht2 ? "bg-emerald-500" : "bg-amber-500"}`} />
             <span className="text-muted-foreground">Sensores</span>

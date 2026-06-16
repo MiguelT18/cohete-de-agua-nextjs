@@ -23,3 +23,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: String(error) }, { status: 400 });
   }
 }
+
+export async function GET() {
+  const snapshot = telemetryStore.getSnapshot();
+  return NextResponse.json(snapshot);
+}
