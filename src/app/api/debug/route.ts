@@ -5,7 +5,7 @@ import { statusStore } from "@/lib/status-store";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const telemetry = telemetryStore.getSnapshot();
+  const telemetry = await telemetryStore.getSnapshot();
   const status = statusStore.getStatus();
 
   return NextResponse.json({

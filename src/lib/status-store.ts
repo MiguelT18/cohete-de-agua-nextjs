@@ -6,6 +6,11 @@ class StatusStore {
   private status: EspStatus | null = null;
   private lastUpdate: number | null = null;
 
+  reset(): void {
+    this.status = null;
+    this.lastUpdate = null;
+  }
+
   update(data: EspStatus): void {
     this.status = { ...data };
     this.lastUpdate = Date.now();

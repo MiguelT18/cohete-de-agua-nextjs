@@ -2,29 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import { telemetryStore } from "@/lib/telemetry-store";
 import { TelemetryData } from "@/lib/types";
 
-function processReading(data: TelemetryData) {
-  telemetryStore.addReading(data);
-}
-
 export async function POST(request: NextRequest) {
   try {
     const payload = await request.json();
 
     if (Array.isArray(payload)) {
       for (const item of payload) {
-        processReading(item as TelemetryData);
+        await telemetryStore.addReading(item as TelemetryData);
       }
     } else {
-      processReading(payload as TelemetryData);
+      await telemetryStore.addReading(payload as TelemetryData);
     }
 
-    return NextResponse.json({ ok: true, sample: telemetryStore.getSnapshot().sampleCount });
+    const snap = await telemetryStore.getSnapshot();
+    return NextResponse.json({ ok: true, sample: snap.sampleCount });
   } catch (error) {
     return NextResponse.json({ ok: false, error: String(error) }, { status: 400 });
   }
 }
 
 export async function GET() {
-  const snapshot = telemetryStore.getSnapshot();
+  const snapshot = await telemetryStore.getSnapshot();
   return NextResponse.json(snapshot);
 }

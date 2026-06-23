@@ -149,9 +149,24 @@ export function TelemetryDashboard() {
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             El ESP32 ha perdido la conexión. Esperando que se reconecte para reanudar la telemetría...
           </p>
-          <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground/50">
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-red-500" />
-            Reconectando automáticamente
+          <div className="mt-8 flex flex-col items-center gap-4">
+            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/50">
+              <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-red-500" />
+              Reconectando automáticamente
+            </div>
+            <button
+              onClick={async () => {
+                if (confirm("¿Reiniciar datos de telemetría para un nuevo lanzamiento?")) {
+                  await fetch("/api/reset", { method: "POST" });
+                }
+              }}
+              className="flex items-center gap-1.5 rounded-lg border border-border/30 bg-card/50 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+              </svg>
+              Nuevo vuelo
+            </button>
           </div>
         </div>
       </div>
@@ -177,6 +192,20 @@ export function TelemetryDashboard() {
             lastUpdate={lastUpdate}
             sampleCount={sampleCount}
           />
+          <button
+            onClick={async () => {
+              if (confirm("¿Reiniciar datos de telemetría para un nuevo lanzamiento?")) {
+                await fetch("/api/reset", { method: "POST" });
+              }
+            }}
+            className="flex items-center gap-1.5 rounded-lg border border-border/40 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
+            title="Restablecer datos para nuevo lanzamiento"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+            </svg>
+            Nuevo vuelo
+          </button>
         </div>
       </div>
 
