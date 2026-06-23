@@ -27,6 +27,16 @@ export interface TelemetrySnapshot {
   connected: boolean;
 }
 
+export interface FlightLog {
+  id: number;
+  timestamp: number;
+  duration: number;
+  maxAlt: number;
+  maxVel: number;
+  maxAcc: number;
+  samples: number;
+}
+
 export interface EspStatus {
   wifi: boolean;
   rssi: number;
