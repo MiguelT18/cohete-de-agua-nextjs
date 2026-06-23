@@ -56,6 +56,84 @@ function FlightMetric({
   )
 }
 
+function SkeletonBlock({ className }: { className?: string }) {
+  return <div className={`animate-pulse rounded bg-muted/60 ${className ?? ""}`} />
+}
+
+function DashboardSkeleton() {
+  return (
+    <>
+      <div className="mb-8 overflow-hidden rounded-2xl border p-6 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <SkeletonBlock className="h-9 w-9 rounded-full" />
+            <div className="space-y-2">
+              <SkeletonBlock className="h-5 w-44" />
+              <SkeletonBlock className="h-3 w-56" />
+            </div>
+          </div>
+          <SkeletonBlock className="h-8 w-36 rounded-lg" />
+        </div>
+      </div>
+
+      <div className="mb-4 mt-8 flex items-center gap-3 border-b border-border/40 pb-2.5">
+        <SkeletonBlock className="h-4 w-4 rounded" />
+        <SkeletonBlock className="h-3 w-36" />
+      </div>
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="rounded-2xl border bg-card p-5 shadow-sm">
+            <div className="flex items-center gap-2">
+              <SkeletonBlock className="h-4 w-4 rounded" />
+              <SkeletonBlock className="h-3 w-16" />
+            </div>
+            <div className="mt-3 flex items-baseline gap-1.5">
+              <SkeletonBlock className="h-9 w-20" />
+              <SkeletonBlock className="h-4 w-8" />
+            </div>
+            <SkeletonBlock className="mt-2 h-3 w-24" />
+          </div>
+        ))}
+      </div>
+
+      <div className="mb-4 mt-8 flex items-center gap-3 border-b border-border/40 pb-2.5">
+        <SkeletonBlock className="h-4 w-4 rounded" />
+        <SkeletonBlock className="h-3 w-32" />
+      </div>
+      <div className="mb-6">
+        <SkeletonBlock className="h-56 w-full rounded-xl" />
+      </div>
+
+      <div className="mb-4 mt-8 flex items-center gap-3 border-b border-border/40 pb-2.5">
+        <SkeletonBlock className="h-4 w-4 rounded" />
+        <SkeletonBlock className="h-3 w-28" />
+      </div>
+      <div className="mb-6">
+        <SkeletonBlock className="h-32 w-full rounded-xl" />
+      </div>
+
+      <div className="mb-4 mt-8 flex items-center gap-3 border-b border-border/40 pb-2.5">
+        <SkeletonBlock className="h-4 w-4 rounded" />
+        <SkeletonBlock className="h-3 w-36" />
+      </div>
+      <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="rounded-xl border bg-card p-4 shadow-sm">
+            <div className="flex items-center gap-2">
+              <SkeletonBlock className="h-2.5 w-2.5 rounded-full" />
+              <SkeletonBlock className="h-3 w-20" />
+            </div>
+            <SkeletonBlock className="mt-3 h-4 w-24" />
+            <SkeletonBlock className="mt-1.5 h-3 w-16" />
+            <SkeletonBlock className="mt-3 h-4 w-20" />
+            <SkeletonBlock className="mt-1.5 h-3 w-16" />
+          </div>
+        ))}
+      </div>
+    </>
+  )
+}
+
 function SectionTitle({ icon, children, color }: { icon: string; children: React.ReactNode; color?: string }) {
   return (
     <div className="mb-4 mt-8 flex items-center gap-3 border-b border-border/40 pb-2.5">
@@ -201,34 +279,9 @@ export function TelemetryDashboard() {
       </div>
 
       {!latest ? (
-        /* Empty state — explicativo para quienes no conocen el proyecto */
-        <div className="flex animate-fade-in items-center justify-center rounded-2xl border-2 border-dashed border-border/50 bg-card/30 p-16">
-          <div className="max-w-md text-center">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="hsl(var(--primary))"
-                strokeWidth="1.5"
-                className="h-8 w-8"
-              >
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
-            </div>
-            <p className="text-lg font-semibold text-foreground">Esperando datos del cohete</p>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Este panel recibe en vivo las lecturas de los sensores a bordo del cohete de agua
-              (altura, velocidad, presión, temperatura, humedad e IMU) a través de la conexión WiFi del ESP32.
-            </p>
-            <p className="mt-3 text-xs text-muted-foreground/60">
-              Asegurate de que el ESP32 esté encendido y transmitiendo datos.
-            </p>
-          </div>
-        </div>
+        <DashboardSkeleton />
       ) : (
-        <>
+        <div className="animate-fade-in">
           {/* Hero — estado actual del vuelo */}
           <div className={`mb-8 overflow-hidden rounded-2xl border p-6 shadow-sm ${heroBg}`}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -318,7 +371,7 @@ export function TelemetryDashboard() {
           <div className="mb-6">
             <FlightLogTable />
           </div>
-        </>
+        </div>
       )}
     </div>
   )

@@ -27,12 +27,30 @@ export function FlightLogTable() {
     return () => clearInterval(id)
   }, [])
 
+  async function clearHistory() {
+    await fetch("/api/flights", { method: "DELETE" })
+    setFlights([])
+  }
+
   return (
     <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-      <div className="border-b border-border/30 bg-gradient-to-r from-primary/[0.02] to-transparent px-5 py-3.5">
+      <div className="flex items-center justify-between border-b border-border/30 bg-gradient-to-r from-primary/[0.02] to-transparent px-5 py-3.5">
         <span className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           📋 Historial de vuelos
         </span>
+        {flights.length > 0 && (
+          <button
+            onClick={clearHistory}
+            className="flex items-center gap-1 rounded-md border border-border/30 px-2 py-1 text-[10px] font-medium text-muted-foreground/60 transition-colors hover:border-red-400/30 hover:text-red-500"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3">
+              <path d="M3 6h18" />
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+            </svg>
+            Limpiar
+          </button>
+        )}
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
