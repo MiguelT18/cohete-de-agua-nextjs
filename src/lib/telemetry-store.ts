@@ -1,7 +1,7 @@
 import { TelemetryData } from "./types";
 
 const MAX_HISTORY = 400;
-const DISCONNECT_TIMEOUT = 3000;
+const DISCONNECT_TIMEOUT = 10000;
 const KV_PREFIX = "telemetry:";
 
 function hasKv(): boolean {
