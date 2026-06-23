@@ -4,10 +4,15 @@ import { useEffect, useRef, useState } from "react";
 
 import { EspStatus } from "@/lib/types";
 
+const ALIVE_TIMEOUT = 30000;
+const MAX_FAILS = 3;
+
 export function useEspStatus() {
   const [status, setStatus] = useState<EspStatus | null>(null);
   const [alive, setAlive] = useState(false);
   const mountedRef = useRef(true);
+  const lastDataRef = useRef<number | null>(null);
+  const failCountRef = useRef(0);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -20,20 +25,30 @@ export function useEspStatus() {
           const data = await res.json();
           if (data && "wifi" in data) {
             setStatus(data as EspStatus);
-            setAlive(true);
+            lastDataRef.current = Date.now();
+            failCountRef.current = 0;
           } else {
-            setAlive(false);
+            failCountRef.current++;
           }
         } else {
-          setAlive(false);
+          failCountRef.current++;
         }
       } catch {
-        if (mountedRef.current) setAlive(false);
+        failCountRef.current++;
       }
+
+      if (!mountedRef.current) return;
+
+      const ago = lastDataRef.current ? Date.now() - lastDataRef.current : Infinity;
+      setAlive(
+        lastDataRef.current !== null &&
+        ago < ALIVE_TIMEOUT &&
+        failCountRef.current < MAX_FAILS
+      );
     }
 
     poll();
-    const interval = setInterval(poll, 3000);
+    const interval = setInterval(poll, 5000);
 
     return () => {
       mountedRef.current = false;

@@ -14,13 +14,14 @@ function allOk(s: { wifi: boolean; sd: boolean; bmp1: boolean; aht1: boolean; mp
 }
 
 export function ConnectionStatus({ connected, lastUpdate, sampleCount }: ConnectionStatusProps) {
-  const { status, alive } = useEspStatus()
+  const { status } = useEspStatus()
 
-  const badgeVariant = !alive ? "destructive" : allOk(status!) ? "success" : "warning"
-  const badgeLabel = !alive ? "Desconectado" : allOk(status!) ? "Conectado" : "Parcial"
-  const dotColor = !alive
+  const sensorsOk = status ? allOk(status) : false
+  const badgeVariant = !connected ? "destructive" : sensorsOk ? "success" : "warning"
+  const badgeLabel = !connected ? "Desconectado" : sensorsOk ? "Conectado" : "Parcial"
+  const dotColor = !connected
     ? "bg-red-500"
-    : allOk(status!)
+    : sensorsOk
       ? "bg-emerald-500 animate-pulse-dot shadow-[0_0_6px] shadow-emerald-500/50"
       : "bg-amber-500"
 

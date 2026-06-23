@@ -20,6 +20,9 @@ interface UseTelemetryReturn {
   connected: boolean;
 }
 
+const CONNECTED_TIMEOUT = 30000;
+const MAX_FAILS = 3;
+
 export function useTelemetry(): UseTelemetryReturn {
   const [latest, setLatest] = useState<TelemetryData | null>(null);
   const [history, setHistory] = useState<TelemetryData[]>([]);
@@ -27,6 +30,8 @@ export function useTelemetry(): UseTelemetryReturn {
   const [lastUpdate, setLastUpdate] = useState<number | null>(null);
   const [connected, setConnected] = useState(false);
   const mountedRef = useRef(true);
+  const lastDataRef = useRef<number | null>(null);
+  const failCountRef = useRef(0);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -37,17 +42,29 @@ export function useTelemetry(): UseTelemetryReturn {
         if (!mountedRef.current) return;
         if (res.ok) {
           const snapshot: TelemetrySnapshot = await res.json();
+          if (snapshot.sampleCount > 0 || snapshot.latest) {
+            lastDataRef.current = Date.now();
+            failCountRef.current = 0;
+          }
           setLatest(snapshot.latest ?? null);
           setHistory(snapshot.history ?? []);
           setSampleCount(snapshot.sampleCount ?? 0);
           setLastUpdate(snapshot.lastUpdate ?? null);
-          setConnected(snapshot.connected ?? false);
         } else {
-          if (mountedRef.current) setConnected(false);
+          failCountRef.current++;
         }
       } catch {
-        if (mountedRef.current) setConnected(false);
+        failCountRef.current++;
       }
+
+      if (!mountedRef.current) return;
+
+      const ago = lastDataRef.current ? Date.now() - lastDataRef.current : Infinity;
+      const hasRecentData = ago < CONNECTED_TIMEOUT;
+      const hasEverHadData = lastDataRef.current !== null;
+      const tooManyFails = failCountRef.current >= MAX_FAILS;
+
+      setConnected(hasEverHadData && hasRecentData && !tooManyFails);
     }
 
     poll();

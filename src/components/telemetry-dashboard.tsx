@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { AltitudeChart } from "@/components/altitude-chart"
 import { ConnectionStatus } from "@/components/connection-status"
 import { EspStatus } from "@/components/esp-status"
@@ -77,7 +77,7 @@ function getFlightPhase(t: number): string {
 export function TelemetryDashboard() {
   const { latest, history, sampleCount, lastUpdate, connected } = useTelemetry()
   const { status, alive } = useEspStatus()
-  const [showImu, setShowImu] = useState(false)
+
   const wasEverAlive = useRef(false)
 
   useEffect(() => {
@@ -277,6 +277,19 @@ export function TelemetryDashboard() {
             <AltitudeChart history={history} />
           </div>
 
+          {/* ⚙️ IMU · MPU6050 */}
+          <SectionTitle icon="⚙️">IMU · MPU6050</SectionTitle>
+          <div className="mb-6">
+            <MPUDisplay
+              ax={latest.ax}
+              ay={latest.ay}
+              az={latest.az}
+              gx={latest.gx}
+              gy={latest.gy}
+              gz={latest.gz}
+            />
+          </div>
+
           {/* 🔬 Sensores ambientales */}
           <SectionTitle icon="🔬">Sensores ambientales</SectionTitle>
           <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
@@ -312,40 +325,6 @@ export function TelemetryDashboard() {
                 { label: "Humedad", value: latest.a2h, unit: "%", decimals: 1 },
               ]}
             />
-          </div>
-
-          {/* ⚙️ IMU — colapsable */}
-          <SectionTitle icon="⚙️">IMU · MPU6050</SectionTitle>
-          <div className="mb-6">
-            <button
-              onClick={() => setShowImu((s) => !s)}
-              className="mb-3 flex w-full items-center gap-2 rounded-lg border border-border/30 bg-card/50 px-4 py-2.5 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-card/80"
-            >
-              <span>{showImu ? "🔽" : "▶️"} Ver lecturas del acelerómetro y giroscopio</span>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className={`ml-auto h-4 w-4 text-muted-foreground/60 transition-transform duration-200 ${
-                  showImu ? "rotate-180" : ""
-                }`}
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
-            {showImu && (
-              <div className="animate-fade-in">
-                <MPUDisplay
-                  ax={latest.ax}
-                  ay={latest.ay}
-                  az={latest.az}
-                  gx={latest.gx}
-                  gy={latest.gy}
-                  gz={latest.gz}
-                />
-              </div>
-            )}
           </div>
         </>
       )}
