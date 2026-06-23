@@ -89,7 +89,6 @@ export function TelemetryDashboard() {
   const disconnected = wasEverAlive.current && !alive
 
   const lanzado = status?.lanzado ?? false
-  const aterrizado = status?.aterrizado ?? false
 
   const maxAlt = useMemo(
     () => (history.length > 0 ? Math.max(...history.map((d) => d.alt)) : 0),
@@ -104,28 +103,18 @@ export function TelemetryDashboard() {
     [history]
   )
 
-  const flightTime = aterrizado
-    ? (status?.tiempoVuelo ?? 0) / 1000
-    : lanzado
-      ? (latest?.t ?? 0) / 1000
-      : 0
+  const flightTime = lanzado
+    ? (status?.tiempoVuelo ?? latest?.t ?? 0) / 1000
+    : 0
 
-  const phase = aterrizado
-    ? "🪂 Aterrizado"
-    : lanzado
-      ? getFlightPhase(latest?.t ?? 0)
-      : "⏳ Esperando lanzamiento..."
+  const phase = lanzado
+    ? getFlightPhase(latest?.t ?? 0)
+    : "⏳ Esperando lanzamiento..."
 
-  const heroIcon = aterrizado ? "🪂" : lanzado ? "🚀" : "⏳"
-  const heroTitle = aterrizado
-    ? "VUELO COMPLETADO"
-    : lanzado
-      ? "VUELO ACTIVO"
-      : "ESPERANDO LANZAMIENTO"
+  const heroIcon = lanzado ? "🚀" : "⏳"
+  const heroTitle = lanzado ? "VUELO ACTIVO" : "ESPERANDO LANZAMIENTO"
 
-  const heroBg = aterrizado
-    ? "border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-transparent"
-    : "border-primary/20 bg-gradient-to-br from-primary/[0.04] to-transparent"
+  const heroBg = "border-primary/20 bg-gradient-to-br from-primary/[0.04] to-transparent"
 
   if (disconnected) {
     return (
